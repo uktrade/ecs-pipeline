@@ -1,5 +1,4 @@
 pipeline {
-
   agent {
     node {
       label env.CI_SLAVE
