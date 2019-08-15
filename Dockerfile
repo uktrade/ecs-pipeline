@@ -12,5 +12,6 @@ RUN apk --no-cache add \
 	echo "e850709b196bfa89cff92d664af9d601  ecs-deploy.tar.gz" | md5sum -c && \
 	tar -zxvf ecs-deploy.tar.gz && \
 	rm -r -f ecs-deploy.tar.gz
- 
-WORKDIR /ecs-deploy-3.6.0
+
+ENV \
+    PATH="/ecs-deploy-3.6.0:$PATH"
