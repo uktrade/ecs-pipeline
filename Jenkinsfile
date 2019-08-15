@@ -26,7 +26,7 @@ pipeline {
       steps {
         script {
           deployer.inside(docker_args) {
-            sh "ecs-deploy"
+            sh "./ecs-deploy"
           }
         }
       }
