@@ -13,5 +13,4 @@ RUN apk --no-cache add \
 	tar -zxvf ecs-deploy.tar.gz && \
 	rm -r -f ecs-deploy.tar.gz
  
-ENTRYPOINT ["bash"]
 WORKDIR /ecs-deploy-3.6.0
