@@ -1,0 +1,26 @@
+pipeline {
+
+  agent {
+    node {
+      label env.CI_SLAVE
+    }
+  }
+
+  options {
+    timestamps()
+    ansiColor('xterm')
+  }
+
+  stages {
+    stage('Init') {
+      steps {
+        script {
+          validateDeclarativePipeline("${env.WORKSPACE}/Jenkinsfile")
+          deployer = docker.image("quay.io/uktrade/ecs-pipeline:${env.GIT_BRANCH.split("/")[1]}")
+          docker_args = "--network host"
+          deployer.pull()
+        }
+      }
+    }
+  }
+}
