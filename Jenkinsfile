@@ -25,11 +25,10 @@ pipeline {
   }
 
   stage('Deploy') {
-      steps {
-        script {
-          deployer.inside(docker_args) {
-            sh "ecs-deploy"
-          }
+    steps {
+      script {
+        deployer.inside(docker_args) {
+          sh "ecs-deploy"
         }
       }
     }
