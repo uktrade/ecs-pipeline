@@ -25,7 +25,7 @@ pipeline {
       steps {
         script {
           deployer.inside(docker_args) {
-            sh "ecs-deploy"
+            sh "ecs-deploy --region eu-west-2 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
           }
         }
       }
