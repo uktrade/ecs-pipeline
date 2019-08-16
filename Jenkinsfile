@@ -16,8 +16,8 @@ pipeline {
         script {
           validateDeclarativePipeline("${env.WORKSPACE}/Jenkinsfile")
           deployer = docker.image("quay.io/uktrade/ecs-pipeline:${env.GIT_BRANCH.split("/")[1]}")
-          docker_args = "--network host"
           deployer.pull()
+          docker_args = "--network host"
         }
       }
     }
