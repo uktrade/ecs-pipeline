@@ -25,7 +25,9 @@ pipeline {
       steps {
         script {
           deployer.inside(docker_args) {
-            sh "ecs-deploy --region eu-west-2 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: env.CredentialsId]]) {
+              sh "ecs-deploy --region eu-west-2 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
+            }
           }
         }
       }
