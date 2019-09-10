@@ -4,23 +4,23 @@ pipeline {
     kubernetes {
       defaultContainer 'jnlp'
       yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    job: ${env.JOB_NAME}
-    job_id: ${env.BUILD_NUMBER}
-spec:
-  nodeSelector:
-    role: worker
-  containers:
-  - name: ecs-pipeline
-    image: quay.io/uktrade/ecs-pipeline
-    imagePullPolicy: Always
-    command:
-    - cat
-    tty: true
-"""
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            job: ${env.JOB_NAME}
+            job_id: ${env.BUILD_NUMBER}
+        spec:
+          nodeSelector:
+            role: worker
+          containers:
+          - name: ecs-pipeline
+            image: quay.io/uktrade/ecs-pipeline
+            imagePullPolicy: Always
+            command:
+            - cat
+            tty: true
+        """
     }
   }
 
@@ -46,7 +46,7 @@ spec:
           script {
             timestamps {
               withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: env.CredentialsId]]) {
-                sh "ecs-deploy --region eu-west-2 --timeout 600 --max-definitions 1 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
+                sh "/ecs-deploy-3.6.0/ecs-deploy --region eu-west-2 --timeout 600 --max-definitions 1 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
               }
             }
           }
