@@ -1,32 +1,53 @@
 pipeline {
+
   agent {
-    node {
-      label env.CI_SLAVE
+    kubernetes {
+      defaultContainer 'jnlp'
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            job: ${env.JOB_NAME}
+            job_id: ${env.BUILD_NUMBER}
+        spec:
+          nodeSelector:
+            role: worker
+          containers:
+          - name: ecs-pipeline
+            image: quay.io/uktrade/ecs-pipeline
+            imagePullPolicy: Always
+            command:
+            - cat
+            tty: true
+        """
     }
   }
 
   options {
     timestamps()
     ansiColor('xterm')
+    buildDiscarder(logRotator(daysToKeepStr: '180'))
   }
 
   stages {
     stage('Init') {
       steps {
         script {
-          validateDeclarativePipeline("${env.WORKSPACE}/Jenkinsfile")
-          deployer = docker.image("quay.io/uktrade/ecs-pipeline:${env.GIT_BRANCH.split("/")[1]}")
-          deployer.pull()
-          docker_args = "--network host"
+          timestamps {
+            validateDeclarativePipeline("${env.WORKSPACE}/Jenkinsfile")
+          }
         }
       }
     }
     stage('Deploy') {
       steps {
-        script {
-          deployer.inside(docker_args) {
-            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: env.CredentialsId]]) {
-              sh "ecs-deploy --region eu-west-2 --timeout 600 --max-definitions 1 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
+        container('ecs-pipeline') {
+          script {
+            timestamps {
+              withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: env.CredentialsId]]) {
+                sh "/ecs-deploy-3.6.0/ecs-deploy --region eu-west-2 --timeout 600 --max-definitions 1 --cluster ${env.Cluster} --service-name ${env.Service} --image ${env.Image}"
+              }
             }
           }
         }
