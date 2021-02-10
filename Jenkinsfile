@@ -15,7 +15,7 @@ pipeline {
             role: worker
           containers:
           - name: ecs-pipeline
-            image: ${env.AwsAccount}.dkr.ecr.${env.AwsRegion}.amazonaws.com/ecs-pipeline
+            image: ${env.EcsPipelineRepository}
             imagePullPolicy: Always
             command:
             - cat
