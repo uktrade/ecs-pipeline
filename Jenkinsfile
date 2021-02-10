@@ -15,7 +15,7 @@ pipeline {
             role: worker
           containers:
           - name: ecs-pipeline
-            image: quay.io/uktrade/ecs-pipeline
+            image: ${env.AwsAccount}.dkr.ecr.${env.AwsRegion}.amazonaws.com/ecs-pipeline
             imagePullPolicy: Always
             command:
             - cat
